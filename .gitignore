@@ -1,0 +1,96 @@
+# .NET Core / .NET Standard
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.exe.config
+*.deps.json
+*.runtimeconfig.json
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio files
+.vs/
+*.vscode/
+*.sln
+*.suo
+*.user
+*.userprefs
+*.proj
+*.xproj
+*.swp
+*.sln.docstates
+
+# NuGet
+packages/
+*.nupkg
+*.paket.*
+*.paket.lock
+paket-files/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Roslyn cache directories
+*.ide/
+*.sln.ide/
+*.sln.ide-shm
+*.sln.ide-wal
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Resharper
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+
+# GhostDoc plugin setting file
+*.GhostDoc.xml
+
+# NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+
+# Installshield output folder
+[Ee]xpress/
+
+# DocFX
+_docfx/
+
+# Build output
+[Bb]uild/
+
+# StyleCop
+StyleCopReport.xml
+
+# Ignore appsettings files
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
