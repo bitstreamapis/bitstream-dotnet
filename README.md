@@ -13,7 +13,7 @@ See [bitstreamapis.com](https://www.bitstreamapis.com) for more information and 
 Install the Bitstream .NET SDK via NuGet:
 
 ```bash
-Install-Package Bitstream.Net
+dotnet add package Bitstream.Net
 ```
 
 ## Usage
