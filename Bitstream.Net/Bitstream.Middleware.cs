@@ -4,8 +4,9 @@ using System.Dynamic;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using Bitstream.Net.Serializtion;
 
 namespace Bitstream.Net;
 
@@ -15,6 +16,8 @@ public class BitstreamMiddleware
     private readonly ILogger<BitstreamMiddleware> _logger;
     private readonly Dictionary<string, object> _options;
     private int _logLevel = 20;
+
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = JsonSerializerOptionsFactory.Create();
 
     public BitstreamMiddleware(RequestDelegate next, ILogger<BitstreamMiddleware> logger, Dictionary<string, object> options)
     {
@@ -92,9 +95,9 @@ public class BitstreamMiddleware
             size = (long?)(payloadBody.Length + headers.ToString().Length)
         };
 
-        if (context.Response.Headers.ContainsKey("Content-Type") && context.Response.Headers["Content-Type"].ToString().Contains("application/json"))
+        if (context.Response.ContentType?.Equals("application/json", StringComparison.OrdinalIgnoreCase) == true)
         {
-            responseBodyString = JsonConvert.DeserializeObject(responseBodyString);
+            responseBodyString = await JsonSerializer.DeserializeAsync(responseBodyString, _jsonSerializerOptions);
         }
 
         var payloadResponse = new BitstreamPayloadResponse
@@ -124,16 +127,16 @@ public class BitstreamMiddleware
 
         if (_logLevel >= 50)
         {
-            _logger.LogInformation("[Bitstream]: Payload: {Payload}", JsonConvert.SerializeObject(payload, Formatting.Indented));
+            _logger.LogInformation("[Bitstream]: Payload: {Payload}", JsonSerializer.Serialize(payload, _jsonSerializerOptions)); // TODO Get rid of this. Slow, fills up logs, etc. If this is really necessary, make it a debug message only
         }
 
         try
         {
             using (var httpClient = new HttpClient())
             {
-                var payloadJson = JsonConvert.SerializeObject(payload);
-                var content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("https://dumka33b3rits53fxeovgscbtm0gvvck.lambda-url.eu-west-2.on.aws/", content);
+                var payloadJson = JsonSerializer.Serialize(payload, _jsonSerializerOptions);
+                using var content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
+                using var response = await httpClient.PostAsync("https://dumka33b3rits53fxeovgscbtm0gvvck.lambda-url.eu-west-2.on.aws/", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -141,7 +144,6 @@ public class BitstreamMiddleware
                     if (_logLevel >= 20)
                     {
                         _logger.LogError("[Bitstream]: Error sending request to Bitstream Event API: {ResponseContent}", responseContent);
-
                     }
                 }
                 else
